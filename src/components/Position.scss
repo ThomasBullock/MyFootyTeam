@@ -1,0 +1,40 @@
+@import '../styles/styles.scss';
+
+.position {
+	flex: 0 1 25%;
+	margin: 2.08% 4.166%;
+	padding: $padding-base;
+
+
+
+	@include elem('content') {
+		background: transparentize($jet, .5);
+		position: relative;				
+	}
+
+	@include elem('name') {
+		// this should be a mixin!
+		color: $vapor;
+		position: absolute;
+	  left: 50%;
+	  top: $padding-base;
+	  transform: translate(-50%, -50%);		
+	}
+	
+}
+
+
+.position__photo {
+	@include img-responsive;
+	margin: 0 auto;
+	height: 15vh;	
+}
+
+.position-enter {
+	opacity: 0.01;
+}
+
+.position-enter-active {
+  opacity: .8;
+  transition: opacity 500ms ease-in;	
+}

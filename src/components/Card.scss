@@ -1,0 +1,13 @@
+@import '../styles/styles.scss';
+
+.player-card {
+	
+	@include elem('stats') {
+		display: flex;
+		justify-content: space-between;
+	}
+	
+	@include elem('photo') {
+		margin-top: $margin-base * -2;
+	}
+}

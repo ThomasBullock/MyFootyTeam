@@ -1,0 +1,28 @@
+.field {
+	height: 100vh;
+	position: relative;
+	background: url('../../img/Oval.jpg');
+	background-size: cover;
+	
+}
+
+.field__wrapper {
+		position: absolute;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-around;
+}
+
+.field-enter {
+  opacity: 0.01;	
+}
+
+.field-enter.field-enter-active {
+  opacity: 1;
+  transition: opacity 1500ms ease-in;
+}
+
+.fuck {
+	position: relative;
+	z-index: 9000;
+}
