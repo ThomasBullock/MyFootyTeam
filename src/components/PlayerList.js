@@ -28,6 +28,7 @@ const iterateList = (players, selectHandler) => {
 
 const PlayerList = (props) => {
 	const { playingList, selectHandler } = props;
+	console.log(selectHandler)
 	return(
     	<List className="playerlist">
 			{iterateList(playingList, selectHandler)}

@@ -1,9 +1,10 @@
 import React from 'react';
-import { Card, CardHeader, CardMedia, CardText } from 'material-ui/Card';
+import { Card, CardHeader, CardMedia, CardText, CardActions } from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
 import './Card.scss';
 import moment from 'moment';
 
-const PlayerCard = ({player}) => {
+const PlayerCard = ({player, addPlayer, resetSquad}) => {
 	console.log(player);
 	const { name, surname, position, imageUrl, games, dob, height, primary, secondary } = player;
 	const age = moment().diff(dob, 'years');
@@ -32,6 +33,11 @@ const PlayerCard = ({player}) => {
 			>
 				<img className="player-card__photo" src={imageUrl} />
 			</CardMedia>
+			<CardActions>
+				<FlatButton label="Add to Squad" onClick={() => addPlayer(player)}/>
+				<FlatButton label="Reset Squad" onClick={() => resetSquad()}/>
+				
+			</CardActions>
 		</Card>
 	)
 }

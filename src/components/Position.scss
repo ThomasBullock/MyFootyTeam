@@ -3,9 +3,36 @@
 .position {
 	flex: 0 1 25%;
 	margin: 2.08% 4.166%;
-	padding: $padding-base;
+
+	@include mod('left-pocket') {
+		flex: 0 1 25%;
+		margin: 2.08% 1.166% 2.08% 7.166%;
+	}
+
+	@include mod('right-pocket') {
+		flex: 0 1 25%;
+		margin: 2.08% 7.166% 2.08% 1.166%;
+	}	
+
+	@include mod('bench') {
+		flex: 0 1 22%;
+		margin: 2.08% 1.5%;
+	}
 
 
+
+	@include elem('border') {
+		padding: $padding-base;
+		background-color: white;			
+
+		&:hover {
+			background-color: green;			
+		}
+
+		@include mod('selected') {
+			background-color: red;
+		}
+	}
 
 	@include elem('content') {
 		background: transparentize($jet, .5);

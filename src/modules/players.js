@@ -36,7 +36,6 @@ export const fetchPlayers = () => {
 		
 		return axios.get(`https://59b0e017ffff010011b4ef5c.mockapi.io/api/players`)
 		.then((response) => {
-			console.log(response)
 			dispatch(receivePlayerList(response.data))
 		})
 	}

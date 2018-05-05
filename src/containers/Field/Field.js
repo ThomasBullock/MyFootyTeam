@@ -1,99 +1,65 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import { func, object } from 'prop-types';
 import { connect } from 'react-redux';
+
+import { removePlayer, selectPosition} from '../../modules/squad';
 import { Transition, TransitionGroup, CSSTransition } from 'react-transition-group'
 import './Field.scss';
 
 import Position from '../../components/Position';
+import Statistics from '../Statistics/Statistics';
 
 class Field extends Component {
 	renderPositions() {
-		return this.props.squad.map((pos) => {
-			console.log(pos.player)
+		return this.props.squad.map((pos, i) => {
+			let positionClass;
+			switch(true) {
+				case i === 0 || i === 15:
+					positionClass = 'position--left-pocket';
+					break;
+				case i === 2 || i === 17:
+				positionClass = 'position--right-pocket';
+				break;					
+				case i > 17:
+					positionClass = 'position--bench';
+					break;
+				default:
+					positionClass = 'position';
+					break; 
+			}
+			console.log(positionClass);
+
 			return(
-				<CSSTransition classNames="position" key={pos.position} timeout={{ enter: 2550, exit: 550 }}>
 					<Position
+						classes={positionClass}
 						key={pos.position}
+						position={pos.position}
+						selected={pos.selected}
 						player={pos.player}
+						selectPosition={this.props.selectPosition}
+						removePlayer={this.props.removePlayer}
 					/>
-				</CSSTransition>	
 			)
 		})
 	}
 	
-	render() {
-		const duration = 300;
-
-		const defaultStyle = {
-		  transition: `opacity ${duration}ms ease-in-out`,
-		  opacity: 0,
-		}
-
-		const transitionStyles = {
-		  entering: { opacity: 0 },
-		  entered:  { opacity: 1 },
-		};
-
-		const Fade = ({ in: inProp }) => (
-		  <Transition in={inProp} timeout={duration}>
-		    {(state) => (
-		      <div style={{
-		        ...defaultStyle,
-		        ...transitionStyles[state]
-		      }}>
-		        I'm a fade Transition!
-		      </div>
-		    )}
-		  </Transition>
-		);		
-		// for (var prop in this.props.squad) {
-		// 	console.log(prop)
-		// 	console.log(this.props.squad[prop]);
-		// }
-				
-		console.log(this.props.squad.hasOwnProperty("FullBack"))
-		// Object.defineProperty(this.props.squad, Symbol.iterator, {
-		// 	enumerable: false,
-		// 	writable: false,
-		// 	configurable: true,
-		// 	value: function() {
-		// 		var o = this;
-		// 		var idx = 0;
-		// 		var ks = Object.keys( o );
-		// 		return {
-		// 			next: function() {
-		// 				return {
-		// 					value: o[ks[idx++]],
-		// 					done: (idx > ks.length)
-		// 				};
-		// 			}
-		// 		};
-		// 	}
-		// } );
-		
-		// for (var v of this.props.squad) {
-		// 	console.log( v );
-		// 	console.log(this.props.squad['v'])
-		// }		
-		
-		// this.props.squad.map( item => console.log(item.player))
-		
-		// for (var prop in this.props.squad) {
-		// 	console.log(prop)
-		// 	console.log(this.props.squad[prop]);
-		// }
-		
+	render() {	
 		return(
-
-				
-				<div className="col-lg-8 field">
-					<TransitionGroup component="div" className="field__wrapper" appear={true}> 
-						{this.renderPositions()}
-					</TransitionGroup>
-					{Fade(1000)}
+				<div className="col-lg-8">
+					<Statistics />
+					<div className="field">
+						<div className="field__wrapper" > 
+							{this.renderPositions()}
+						</div>
+					</div>
 				</div>
-
 		)
 	}
+}
+
+
+Field.propTypes = {
+	selectPosition: func.isRequired
 }
 
 const mapStateToProps = (state) => {
@@ -102,9 +68,10 @@ const mapStateToProps = (state) => {
 	}
 } 
 
-const mapDispatchToProps = () => {
+const mapDispatchToProps = (dispatch) => {
 	return {
-		
+		selectPosition: (position) => dispatch(selectPosition(position)),
+		removePlayer: (position) => dispatch(removePlayer(position)),			
 	}
 }
 

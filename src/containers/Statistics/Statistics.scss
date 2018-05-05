@@ -1,0 +1,14 @@
+@import '../../styles/styles.scss';
+
+.statistics {
+    background: $oil;
+
+    @include elem('list') {
+        padding: $padding-base;
+        list-style: none;
+        margin: 0;
+        display: flex;
+        justify-content: space-between;
+        color: $silver;        
+    }
+}

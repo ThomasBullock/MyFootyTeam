@@ -1,22 +1,32 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { func, object, oneOfType } from 'prop-types';
+import RemoveButton from './RemoveButton';
 import { Paper } from 'material-ui';
+import classNames from 'classnames';
 import blank from '../img/Blank_t.png';
 import './Position.scss';
 
 const Position = (props) => {
-	const { player } = props;
-	console.log(player)
+	const { classes, player, position, selectPosition, selected, removePlayer } = props;
+	// console.log(position)
 	const photoUrl = player ? player.imageUrl : blank;
+	const positionBorderClasses = classNames({
+		position__border: true,
+		[`position__border--selected`]: selected
+	})
 	return(
 
-			<Paper className="position"
+			<Paper className={classes}
 				zDepth={2}
+				onClick={() => selectPosition(position)}
 			>
-				<div className="position__content">
-					<span className="position__name">{player && player.surname}</span>
-					<img className="position__photo" src={photoUrl} />
-				</div>
+				<div className={positionBorderClasses}>
+					<div className="position__content">
+						{selected && player && <RemoveButton removePlayer={removePlayer} position={position}/>}
+						<span className="position__name">{player && player.surname}</span>
+						<img className="position__photo" src={photoUrl} />
+					</div>
+				</div>	
 			</Paper>
 
 	)
@@ -24,7 +34,12 @@ const Position = (props) => {
 }
 
 Position.defaultProps = {
-	player: 'empty'
+
+}
+
+Position.propTypes = {
+	player: oneOfType([object, () => {return null}]),
+	selectPosition: func.isRequired
 }
 
 export default Position;
