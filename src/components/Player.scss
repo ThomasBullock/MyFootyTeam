@@ -1,0 +1,25 @@
+@import '../styles/styles.scss';
+
+.player {
+    flex: 0 1 32%;
+    position: relative;
+    background: $jet;
+    margin: 0.66%;
+    color: $vapor;
+
+    @include elem('name') {
+        position: absolute;
+        top: 0;
+        left: 2px;
+    }
+
+    @include elem('surname') {
+        position: absolute;
+        bottom: 0;
+        right: 2px;
+    }
+
+    img {
+        @include img-responsive();
+    }
+}

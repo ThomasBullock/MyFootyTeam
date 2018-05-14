@@ -1,44 +1,26 @@
 import React from 'react';
 import { string, number, array } from 'prop-types';
-
-import {List, ListItem} from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
-import {pinkA200, transparent} from 'material-ui/styles/colors';
-
-// import MobileTearSheet from './common/mobileTearSheet.js';
+import { List, ListItem } from 'material-ui/List';
+import Player from './Player';
+import './PlayerList.scss';
 
 const iterateList = (players, selectHandler) => {
-	return players.map( (player, i) => {
-		return(
-      <ListItem 
-      	key={i}
-      	className="playerlist__item"
-        primaryText={`${player.name} ${player.surname}`}
-        leftIcon={<span style={
-        	{ top: 1, borderRadius: '50%', behavior: 'url(PIE.htc)', background: 'red', border: '2px solid #333', width: 16,
-  				 height: 16, padding: 5, textAlign: 'center', font: '16px Arial, sans-serif', color: '#333'}
-        } 
-        className="playerlist__number" color={pinkA200} >{player.id}</span>}
-        rightAvatar={<Avatar src={player.imageUrl} />}
-        onClick={() => selectHandler(i)}
-      />
-		)
-	})
-}
+  return players.map((player, i) => {
+    return (
+      <Player key={i} id={i} player={player} selectHandler={selectHandler} />
+    );
+  });
+};
 
-const PlayerList = (props) => {
-	const { playingList, selectHandler } = props;
-	console.log(selectHandler)
-	return(
-    	<List className="playerlist">
-			{iterateList(playingList, selectHandler)}
-	    </List>
-		
-	)
-}
+const PlayerList = props => {
+  const { playingList, selectHandler } = props;
+  return (
+    <div className="playerlist">{iterateList(playingList, selectHandler)}</div>
+  );
+};
 
 PlayerList.propTypes = {
-	playingList: array.isRequired
-}
+  playingList: array.isRequired
+};
 
 export default PlayerList;

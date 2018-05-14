@@ -2,12 +2,22 @@
 
 .player-card {
 	
+	@include elem('header') {
+		background: red;
+
+		div {
+			display: flex;	
+		}
+	}
+
 	@include elem('stats') {
 		display: flex;
 		justify-content: space-between;
 	}
 	
 	@include elem('photo') {
-		margin-top: $margin-base * -2;
+		margin-top: $margin-base * -4;
 	}
+
+
 }

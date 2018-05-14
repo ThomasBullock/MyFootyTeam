@@ -17,6 +17,8 @@
     "moment": "^2.22.1",
     "prop-types": "^15.6.1",
     "react": "^16.2.0",
+    "react-dnd": "^2.6.0",
+    "react-dnd-html5-backend": "^2.6.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
@@ -36,9 +38,6 @@
   },
   "homepage": "https://cra-redux-router-thunk.herokuapp.com",
   "lint-staged": {
-    "*.{js,json,css,md}": [
-      "prettier --write",
-      "git add"
-    ]
+    "*.{js,json,css,md}": ["prettier --write", "git add"]
   }
 }
