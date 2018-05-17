@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import {
   Card,
   CardHeader,
@@ -10,8 +11,7 @@ import FlatButton from 'material-ui/FlatButton';
 import './Card.scss';
 import moment from 'moment';
 
-const PlayerCard = ({ player, addPlayer, resetSquad }) => {
-  // console.log(player);
+const PlayerCard = ({ player, addPlayer, resetSquad, selectedPosition }) => {
   const {
     name,
     surname,
@@ -50,7 +50,7 @@ const PlayerCard = ({ player, addPlayer, resetSquad }) => {
         <img className="player-card__photo" src={imageUrl} />
       </CardMedia>
       <CardActions>
-        <FlatButton label="Add to Squad" onClick={() => addPlayer(player)} />
+        <FlatButton label="Add to Squad" onClick={() => addPlayer(player, selectedPosition.id)} />
         <FlatButton label="Reset Squad" onClick={() => resetSquad()} />
       </CardActions>
     </Card>

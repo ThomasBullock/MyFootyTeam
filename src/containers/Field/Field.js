@@ -2,12 +2,16 @@ import React, { Component, Fragment } from 'react';
 import { func, object } from 'prop-types';
 import { connect } from 'react-redux';
 
-import { removePlayer, selectPosition} from '../../modules/squad';
-import { Transition, TransitionGroup, CSSTransition } from 'react-transition-group'
+import { addPlayer, removePlayer, selectPosition} from '../../modules/squad';
+import { Transition, TransitionGroup, CSSTransition } from 'react-transition-group';
 import './Field.scss';
 
 import Position from '../../components/Position';
 import Statistics from '../Statistics/Statistics';
+import Player from '../../components/Player';
+import { selectPlayer } from '../../modules/player';
+import { changePlayerSelectionStatus } from '../../modules/players';
+import PositionContainer from '../PositionContainer/PositionContainer';
 
 class Field extends Component {
 	renderPositions() {
@@ -27,18 +31,23 @@ class Field extends Component {
 					positionClass = 'position';
 					break; 
 			}
-			console.log(positionClass);
-
+			// console.log(pos)
 			return(
-					<Position
+					<PositionContainer
 						classes={positionClass}
 						key={pos.position}
+						id={pos.id}
 						position={pos.position}
 						selected={pos.selected}
-						player={pos.player}
+						playerId={pos.playerId}
 						selectPosition={this.props.selectPosition}
+						addPlayer={this.props.addPlayer}
 						removePlayer={this.props.removePlayer}
-					/>
+						changePlayerSelectionStatus={this.props.changePlayerSelectionStatus}
+						players={this.props.players}
+					>
+						{/* {pos.playerId && <Player id={pos.playerId} player={players[pos.playerId]} selectHandler={selectPlayer} />} */}
+					</PositionContainer>
 			)
 		})
 	}
@@ -64,14 +73,17 @@ Field.propTypes = {
 
 const mapStateToProps = (state) => {
 	return {
-		squad: state.squad
+		squad: state.squad,
+		players: state.players,
 	}
 } 
 
 const mapDispatchToProps = (dispatch) => {
 	return {
 		selectPosition: (position) => dispatch(selectPosition(position)),
-		removePlayer: (position) => dispatch(removePlayer(position)),			
+		addPlayer: (player, positionId) => dispatch(addPlayer(player, positionId)),
+		removePlayer: (position) => dispatch(removePlayer(position)),	
+		changePlayerSelectionStatus: (playerId) => dispatch(changePlayerSelectionStatus(playerId)),
 	}
 }
 

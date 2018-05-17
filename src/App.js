@@ -16,7 +16,6 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 class App extends Component {
 	componentWillMount() {
-		console.log('components mounted')
 		this.props.fetchPlayers();
 	}
 

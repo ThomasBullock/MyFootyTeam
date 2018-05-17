@@ -4,18 +4,30 @@ import { List, ListItem } from 'material-ui/List';
 import Player from './Player';
 import './PlayerList.scss';
 
-const iterateList = (players, selectHandler) => {
+// const addedToSquad = (id, squad) => {
+//   let added = false;
+//   squad.map( (player) => {
+//     if(player.id = id) {
+//       added = true;
+//     }
+//   })
+//   return added;
+// }
+
+const iterateList = (players, selectHandler, addPlayer, changePlayerSelectionStatus) => {
   return players.map((player, i) => {
     return (
-      <Player key={i} id={i} player={player} selectHandler={selectHandler} />
+      <Player key={i} id={i} player={player} inSquad={player.inSquad} selectHandler={selectHandler} addPlayer={addPlayer} changePlayerSelectionStatus={changePlayerSelectionStatus} />
     );
   });
 };
 
-const PlayerList = props => {
-  const { playingList, selectHandler } = props;
+const PlayerList = (props) => {
+  const { playingList, selectHandler, addPlayer, changePlayerSelectionStatus } = props;
   return (
-    <div className="playerlist">{iterateList(playingList, selectHandler)}</div>
+    <div className="playerlist">
+      {iterateList(playingList, selectHandler, addPlayer, changePlayerSelectionStatus)}
+    </div>
   );
 };
 
