@@ -1,21 +1,46 @@
-@import '../styles/styles.scss';
+@import '../../styles/styles.scss';
+
+@mixin position-base() {
+    height: 100px;
+    // min-height: 120px;
+    // max-height: 120px;
+    padding: 15px;
+    background: #333;
+}
 
 .position {
+    @include position-base();
 	flex: 0 1 25%;
 	margin: 2.08% 4.166%;
-	height: 100%;
+
+
 
 	@include mod('left-pocket') {
+        @include position-base();
 		flex: 0 1 25%;
 		margin: 2.08% 1.166% 2.08% 7.166%;
 	}
 
 	@include mod('right-pocket') {
+        @include position-base();
 		flex: 0 1 25%;
 		margin: 2.08% 7.166% 2.08% 1.166%;
 	}	
 
+	@include mod('left-flank') {
+        @include position-base();
+		flex: 0 1 25%;
+		margin: 2.08% 1.166% 2.08% 5.166%;
+    }
+    
+	@include mod('right-flank') {
+        @include position-base();
+		flex: 0 1 25%;
+		margin: 2.08% 5.166% 2.08% 1.166%;
+	}    
+
 	@include mod('bench') {
+        @include position-base();
 		flex: 0 1 22%;
 		margin: 2.08% 1.5%;
 	}

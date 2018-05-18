@@ -9,11 +9,23 @@ import PlayerCard from '../../components/Card';
 import PlayerList from '../../components/PlayerList';
 import Loader from '../../img/Ellipsis.svg';
 
-import { changePlayerSelectionStatus } from '../../modules/players';
+import {
+  changePlayerSelectionStatus,
+  resetPlayersSelection
+} from '../../modules/players';
 import { selectPlayer } from '../../modules/player';
 import { addPlayer, removePlayer, resetSquad } from '../../modules/squad';
 
 class Players extends Component {
+  resetHandler() {
+    console.log(this.props);
+    return () => {
+      console.log('reset');
+      this.props.resetSquad();
+      this.props.resetPlayersSelection();
+    };
+  }
+
   render() {
     const { players, squad } = this.props;
     // console.log(players)
@@ -25,7 +37,9 @@ class Players extends Component {
             player={this.props.selected}
             addPlayer={this.props.addPlayer}
             removePlayer={this.props.removePlayer}
+            resetHandler={this.resetHandler()}
             resetSquad={this.props.resetSquad}
+            resetPlayersSelection={this.props.resetPlayersSelection}
             selectedPosition={this.props.selectedPosition}
           />
           {/*<PlayerControls/> */}
@@ -56,11 +70,11 @@ const mapStateToProps = state => {
     players: state.players,
     selected: state.players[state.player],
     selectedPosition: state.squad.filter((item, i) => {
-          if (item.selected === true) {
-            return item;
-          }
-        })[0]    
-    };
+      if (item.selected === true) {
+        return item;
+      }
+    })[0]
+  };
 };
 
 const mapDispatchToProps = dispatch => {
@@ -69,7 +83,9 @@ const mapDispatchToProps = dispatch => {
     addPlayer: (player, positionId) => dispatch(addPlayer(player, positionId)),
     removePlayer: position => dispatch(removePlayer(position)),
     resetSquad: () => dispatch(resetSquad()),
-    changePlayerSelectionStatus: (playerId) => dispatch(changePlayerSelectionStatus(playerId))
+    changePlayerSelectionStatus: playerId =>
+      dispatch(changePlayerSelectionStatus(playerId)),
+    resetPlayersSelection: () => dispatch(resetPlayersSelection())
   };
 };
 

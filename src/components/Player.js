@@ -6,27 +6,25 @@ import './Player.scss';
 
 const playerSource = {
   beginDrag(props) {
-    console.log(props)
+    console.log(props);
     return {
       id: props.id,
       changePlayerSelectionStatus: props.changePlayerSelectionStatus
     };
   },
   endDrag(props, monitor) {
-    if(monitor.didDrop()) {
-      console.log('dropped on position');
-      console
+    if (monitor.didDrop()) {
       console.log(props);
-      if(!props.inSquad) {
-        console.log('cahenge status')
-        props.changePlayerSelectionStatus(props.id)
-      }
       const dropResult = monitor.getDropResult();
-      console.log(dropResult)
+      if (!props.inSquad) {
+        console.log('cahenge status');
+        props.changePlayerSelectionStatus(props.id);
+        // props.removePlayer()
+      }
+
+      console.log(dropResult);
       props.addPlayer(props.id, dropResult.id);
     }
-
-
   }
 };
 
@@ -47,20 +45,23 @@ class Player extends Component {
       addPlayer,
       connectDragSource,
       changePlayerSelectionStatus,
-      isDragging
+      isDragging,
+      inSquad
     } = this.props;
-    console.log(this.props)
     return connectDragSource(
       <div
         className="player"
         style={{
           opacity: isDragging ? 0.5 : 1,
-          cursor: 'move'
+          cursor: 'move',
+          background: inSquad ? 'red' : 'black'
         }}
         onClick={() => selectHandler(id)}>
         <span className="player__name">{player.name}</span>
         <span className="player__surname">{player.surname}</span>
-        <img src={player.imageUrl} alt={`${player.name} ${player.surname}`} />
+        <div className="player__img-wrapper">
+          <img src={player.imageUrl} alt={`${player.name} ${player.surname}`} />
+        </div>
       </div>
     );
   }
