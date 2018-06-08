@@ -3,7 +3,7 @@
 .player-card {
 	
 	@include elem('header') {
-		background: red;
+		background: $gainsboro;
 
 		div {
 			display: flex;	
@@ -16,7 +16,15 @@
 	}
 	
 	@include elem('photo') {
-		margin-top: $margin-base * -4;
+		@media (min-width: 992px) { 
+			// max-height: 310px;
+		}
+	
+		@media (min-width: 1200px) { 
+			// max-height: 310px;
+		}
+
+		margin-top: -50px;
 	}
 
 

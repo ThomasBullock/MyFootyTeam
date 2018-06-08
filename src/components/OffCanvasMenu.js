@@ -9,26 +9,32 @@ import './OffCanvasMenu.scss';
 class OffCanvasMenu extends Component {
   constructor () {  // move this to redux store!
     super();
-    this.state = { menuOpen: false };
-    // this.menuCollapseWithResize = this.menuCollapseWithResize.bind(this);
+    this.state = { open: false };
     this.toggleMenu = this.toggleMenu.bind(this);
   }	
 
   // Sidebar toggle
   toggleMenu() {
-    console.log('click toggle')
     this.setState(prevState => ({
-      menuOpen: !prevState.menuOpen
+      open: !prevState.open
     }));
+  }
+
+  onRequestChange(open) {
+    console.log('drawer status changed')
+
   }
 	
   render(){
   	return(
       <Fragment>  
-  	    <Drawer open={this.state.menuOpen}
+  	    <Drawer open={this.state.open}
   	      className=""
-  	      containerClassName="sidebar-initial-color"
+          containerClassName="sidebar-initial-color"
+          docked={false}
+          onRequestChange={(open) => this.setState({open})}
   	    >
+
   	      <Routes />
 
   	    </Drawer>    	

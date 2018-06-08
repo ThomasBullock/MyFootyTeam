@@ -4,7 +4,7 @@ export const SELECT_POSITION = action('SELECT_POSITION');
 export const ADD_PLAYER = action('ADD_PLAYER');
 export const REMOVE_PLAYER = action('REMOVE_PLAYER');
 export const RESET_SQUAD = action('RESET_SQUAD');
-export const selectPosition = position => ({ type: SELECT_POSITION, position });
+export const selectPosition = (positionId) => ({ type: SELECT_POSITION, positionId });
 export const addPlayer = (playerId, positionId) => ({
   type: ADD_PLAYER,
   playerId,
@@ -46,25 +46,16 @@ const squad = (state = initialState, action) => {
         [...state],
         state.map(item => {
           return {
+            id: item.id,
             position: item.position,
-            playerId: item.player.id,
-            selected: item.position === action.position ? true : false
+            playerId: item.playerId,
+            selected: item.id === action.positionId ? true : false
           };
         }),
         {}
       );
     case ADD_PLAYER:
-      //   console.log(action)
-      //   return Object.assign([
-      //     ...state.slice(0, action.positionId),
-      //     {
-      //       id: action.positionId,
-      //       position: state[action.positionId].position,
-      //       playerId:  action.playerId, // can we get this from state??
-      //       selected: true
-      //     },
-      //     ...state.slice(action.positionId + 1)
-      //   ]);
+      console.log(action);
       return Object.assign(
         [...state],
         state.map(position => {
@@ -83,32 +74,17 @@ const squad = (state = initialState, action) => {
               selected: false
             };
           } else {
-            return position;
+            return { // this is to clear away any other 'selected' positions
+              id: position.id,
+              position: position.position,
+              playerId: position.playerId, // can we get this from state??
+              selected: false
+            };
           }
         })
       );
     case REMOVE_PLAYER:
       console.log(action);
-      // let index2;
-      // const update2 = state
-      //   .filter((item, i) => {
-      //     if (item.position === action.position) {
-      //       index2 = i;
-      //       return item;
-      //     }
-      //   })
-      //   .map(item => {
-      //     return {
-      //       position: item.position,
-      //       player: null,
-      //       selected: item.selected
-      //     };
-      //   })[0];
-      // return Object.assign([
-      //   ...state.slice(0, index2),
-      //   update2,
-      //   ...state.slice(index2 + 1)
-      // ]);
       return Object.assign([
         ...state.slice(0, action.positionId),
         {
@@ -123,12 +99,21 @@ const squad = (state = initialState, action) => {
       return Object.assign(
         [...state],
         state.map((item, i) => {
-          return {
-            id: i,
-            position: item.position,
-            playerId: null,
-            selected: false
-          };
+          if (i === 0) {
+            return {
+              id: i,
+              position: item.position,
+              playerId: null,
+              selected: true
+            }
+          } else {
+            return {
+              id: i,
+              position: item.position,
+              playerId: null,
+              selected: false
+            } 
+          }
         }),
         {}
       );

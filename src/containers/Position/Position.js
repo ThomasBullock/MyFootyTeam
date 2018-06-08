@@ -1,51 +1,37 @@
 import React, { Component } from 'react';
-import { func, object, oneOfType, bool } from 'prop-types';
+import { bool, func, number, object, oneOfType, string } from 'prop-types';
 import RemoveButton from '../../components/RemoveButton';
-// import { Paper } from 'material-ui';
-import Position from '../../components/Position';
+import { Paper } from 'material-ui';
+// import Position from '../../components/Position';
 import Player from '../../components/Player';
+import NoPlayer from '../../components/common/NoPlayer';
 import classNames from 'classnames';
-// import blank from '../img/Blank_t.png';
 import { addPlayer, removePlayer, resetSquad } from '../../modules/squad';
 import { ItemTypes } from '../../constants/itemTypes';
 import { DropTarget } from 'react-dnd';
-import './PositionContainer.scss';
-
-// const addedToSquad = (id, squad) => {
-//   let added = false;
-//   squad.map( (player) => {
-//     if(player.id = id) {
-//       added = true;
-//     }
-//   })
-//   return added;
-// }
+import './Position.scss';
 
 const posTarget = {
   drop(props, monitor) {
-    // addPlayer(props.player, props.position);
     return {
       id: props.id,
-      position: props.position
+      position: props.position,
+      playerId: props.playerId
     };
   }
 };
 
 const collect = (connect, monitor) => {
-  //   console.log(connect);
-  //   console.log(monitor);
-
   return {
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver()
   };
 };
 
-class PositionContainer extends Component {
+class Position extends Component {
   removeHandler(playerId, positionId) {
     console.log(playerId, positionId);
     return () => {
-      console.log(playerId, positionId);
       this.props.changePlayerSelectionStatus(playerId);
       this.props.removePlayer(positionId);
     };
@@ -61,7 +47,7 @@ class PositionContainer extends Component {
           height: '100%',
           width: '100%',
           zIndex: 1,
-          opacity: 0.5,
+          opacity: 1,
           backgroundColor: color
         }}
       />
@@ -74,82 +60,81 @@ class PositionContainer extends Component {
       position,
       id,
       selectPosition,
+      selectHandler,
       selected,
       addPlayer,
       removePlayer,
       changePlayerSelectionStatus,
+      resetPlayersSelection,
       players,
       connectDropTarget,
       isOver
     } = this.props;
-    // const photoUrl = player ? player.imageUrl : blank;
-    const positionBorderClasses = classNames({
-      position__border: true,
-      [`position__border--selected`]: isOver || selected
-    });
-    // console.log(playerId, players[playerId]);
+    const positionClasses = classNames({
+      'position' : true,
+      'position--selected' : selected,
+      [`${classes}`] : classes,
+      'position-over' : isOver
+    })
+    console.log(isOver)
     return connectDropTarget(
-      <div
-        style={{
-          position: 'relative',
-          padding: '15px',
-          background: '#333'
-        }}
-        className={classes}>
+      <div className={positionClasses}>
+        <Paper         
+          onClick={() => selectPosition(id)}
+          style={{
+            position: 'relative',
+            // height: '100px',
+            background: 'transparent'
+          }}
+           >
         {playerId !== null && (
           <RemoveButton
             removePlayer={this.removeHandler(playerId, id)}
             positionId={id}
           />
         )}
-        {playerId !== null && (
+        {(playerId !== null) ? (
           <Player
             id={playerId}
             player={players[playerId]}
             inSquad={players[playerId].inSquad}
+            selectHandler={selectHandler}
             addPlayer={addPlayer}
             changePlayerSelectionStatus={changePlayerSelectionStatus}
-          />
-        )}
-        {isOver && this.renderOverlay('red')}
+            resetPlayersSelection={resetPlayersSelection}
+            selected={selected}
+          />)
+          :(
+            <NoPlayer />
+          )
+        }
+        {/* {selected && this.renderOverlay('#333')} */}
+        {isOver && this.renderOverlay('#EEEEEE')}
+        </Paper>
       </div>
     );
   }
 }
 
-{
-  /* <Paper
-className={classes}
-zDepth={2}
-onClick={() => selectPosition(position)}
->
-<div className={positionBorderClasses}>
-  <div className="position__content">
-    {selected &&
-      player && (
-        <RemoveButton removePlayer={removePlayer} position={position} />
-      )}
-    <span className="position__name">{player && player.surname}</span>
-    <img className="position__photo" src={photoUrl} />
-  </div>
-</div>
-</Paper> */
-}
+Position.defaultProps = {};
 
-PositionContainer.defaultProps = {};
-
-PositionContainer.propTypes = {
-  connectDropTarget: func.isRequired,
-  isOver: bool.isRequired,
-  player: oneOfType([
-    object,
+Position.propTypes = {
+  playerId : oneOfType([
+    number,
     () => {
       return null;
     }
-  ]),
-  selectPosition: func.isRequired
+  ]), // cannot is require because propTYpes wont accept null!!
+  position : string.isRequired,
+  connectDropTarget: func.isRequired,
+  isOver: bool.isRequired,
+  selectPosition: func.isRequired,
+  selectHandler: func.isRequired,
+  addPlayer: func.isRequired,
+  removePlayer: func.isRequired,
+  resetPlayersSelection: func.isRequired
 };
 
 export default DropTarget(ItemTypes.PLAYER, posTarget, collect)(
-  PositionContainer
+  Position
 );

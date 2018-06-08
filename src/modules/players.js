@@ -1,9 +1,15 @@
 import axios from 'axios';
+import moment from 'moment';
+import { imgUrlGenerator } from './helpers';
+const baseUrl = (process.env.NODE_ENV === 'production') ? 'http://localhost:8000/api' : 'https://59b0e017ffff010011b4ef5c.mockapi.io/api';
 
 const action = name => `myfootyteam18/player/${name}`;
 
 export const REQUEST_PLAYER_LIST = action('REQUEST_PLAYER_LIST');
 export const RECEIVE_PLAYER_LIST = action('RECEIVE_PLAYER_LIST');
+export const ADD_NEW_PLAYER_TO_LIST = action('ADD_NEW_PLAYER_TO_LIST');
+export const UPDATE_PLAYER_ON_LIST = action('UPDATE_PLAYER_ON_LIST');
+export const DELETE_PLAYER_FROM_LIST = action('DELETE_PLAYER_FROM_LIST');
 export const CHANGE_PLAYER_SELECTION_STATUS = action(
   'CHANGE_PLAYER_SELECTION_STATUS'
 );
@@ -14,6 +20,10 @@ export const receivePlayerList = players => ({
   type: RECEIVE_PLAYER_LIST,
   players
 });
+export const addNewPlayerToList = (player) => ({ type: ADD_NEW_PLAYER_TO_LIST, player });
+export const updatePlayerOnList = (player) => ({ type: UPDATE_PLAYER_ON_LIST, player });
+export const deletePlayerFromList = (player) => ({ type: DELETE_PLAYER_FROM_LIST, player })
+
 export const changePlayerSelectionStatus = playerId => ({
   type: CHANGE_PLAYER_SELECTION_STATUS,
   playerId
@@ -37,6 +47,7 @@ const player = (state = initialState, action) => {
       // 	console.log(state)
       return action.players.map(obj => {
         obj.inSquad = false;
+        obj.imageUrl = imgUrlGenerator(obj);
         return obj;
       });
     case RESET_PLAYERS_SELECTION:
@@ -46,7 +57,7 @@ const player = (state = initialState, action) => {
           return {
             id: item.id,
             name: item.name,
-            imageUrl: item.imageUrl,
+            imageUrl: imgUrlGenerator(item),
             games: item.games,
             dob: item.dob,
             height: item.height,
@@ -59,25 +70,41 @@ const player = (state = initialState, action) => {
         })
       );
     case CHANGE_PLAYER_SELECTION_STATUS:
-      // console.log(action);
-      // console.log(state[action.playerId]);
-      return Object.assign([
-        ...state.slice(0, action.playerId),
-        {
-          id: state[action.playerId].id,
-          name: state[action.playerId].name,
-          imageUrl: state[action.playerId].imageUrl,
-          games: state[action.playerId].games,
-          dob: state[action.playerId].dob,
-          height: state[action.playerId].height,
-          status: state[action.playerId].status,
-          surname: state[action.playerId].surname,
-          primary: state[action.playerId].primary,
-          secondary: state[action.playerId].secondary,
-          inSquad: !state[action.playerId].inSquad
-        },
-        ...state.slice(action.playerId + 1)
-      ]);
+      const updatedPlayer = state.filter( (player, i) => {
+        return player.id === action.playerId
+      })[0];
+      console.log(updatedPlayer.inSquad);
+      updatedPlayer.inSquad = !updatedPlayer.inSquad;
+      console.log(updatedPlayer);
+      let updatedState = state.map( (player) => {
+        if(player.id === updatedPlayer.id) {
+          return updatedPlayer;
+        } else {
+          return player;
+        }
+      })
+      console.log(updatedState);
+      return Object.assign(
+        updatedState
+      );
+
+    case DELETE_PLAYER_FROM_LIST:
+      return Object.assign( 
+        state.filter( (player) => player.id !== action.player.id)
+      )   
+
+    case UPDATE_PLAYER_ON_LIST:
+    console.log('in update player reducer')
+      return Object.assign(
+        state.map( (player) => {
+          if(player.id === action.player.id) {
+            console.log(player)
+            return action.player;
+          } else {
+            return player;
+          }
+        })
+      );
     default:
       return state;
   }
@@ -90,9 +117,84 @@ export const fetchPlayers = () => {
     dispatch(requestPlayerList());
 
     return axios
-      .get(`https://59b0e017ffff010011b4ef5c.mockapi.io/api/players`)
+      .get(`${baseUrl}/players`)
       .then(response => {
         dispatch(receivePlayerList(response.data));
       });
   };
 };
+
+export const addPlayerToDatabase = (player) => {  // need to add to reducer
+  return (dispatch) => {
+    console.log(player.dob);
+    player.dob = (new Date(player.dob)).toISOString().substring(0, 10);
+    console.log(player.dob);
+    const body = JSON.stringify(player);
+    console.log(body);
+
+    return axios({
+      method: 'post',
+      url: `${baseUrl}/players`,
+      data: body,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    }).then(response => {
+        console.log(response.data);
+        dispatch(addNewPlayerToList(player));
+      })
+      .catch(error => {
+        console.log(error.response);
+      })  
+  }
+}
+
+export const deletePlayerFromDatabase = (player) => {
+  return (dispatch) => {
+    console.log(player);
+    const body = JSON.stringify(player);
+    
+    return axios({
+      method: 'delete',
+      url: `${baseUrl}/players/${player.id}`,
+      data: body,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+
+    }).then(response => {
+      dispatch(deletePlayerFromList(player))
+    })
+    .catch(error => {
+      console.log(error.response)
+    })
+
+  }
+}
+
+export const updatePlayerInDatabase = (player) => {
+  return (dispatch) => {
+    console.log(player);
+    player.dob = (new Date(player.dob)).toISOString().substring(0, 10);
+    const body = JSON.stringify(player);
+    dispatch(updatePlayerOnList(player))
+
+    return axios({
+      method: 'put',
+      url: `${baseUrl}/players/${player.id}`,
+      data: body,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    }).then(response => {
+      console.log(response.data);
+      dispatch(updatePlayerOnList(player))
+    })
+    .catch(error => {
+      console.log(error.response)
+    })
+  } 
+} 

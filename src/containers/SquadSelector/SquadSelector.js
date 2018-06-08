@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array } from 'prop-types';
+import { array, func } from 'prop-types';
 import { connect } from 'react-redux';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -29,7 +29,8 @@ class SquadSelector extends Component {
 }
 
 SquadSelector.propTypes = {
-  players: array.isRequired
+  players: array.isRequired,
+  requestPlayerList: func.isRequired
 };
 
 const mapStateToProps = state => {

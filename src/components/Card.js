@@ -1,4 +1,5 @@
 import React from 'react';
+import { func, object } from 'prop-types';
 import { connect } from 'react-redux';
 import {
   Card,
@@ -33,6 +34,7 @@ const PlayerCard = ({ player, addPlayer, resetHandler, selectedPosition }) => {
         subtitle={`${primary}${secondary ? ' | ' + secondary : ''}`}
       />
       <CardMedia
+        style={{background: '#222'}}
         overlay={
           <CardText>
             <div className="player-card__stats">
@@ -52,12 +54,17 @@ const PlayerCard = ({ player, addPlayer, resetHandler, selectedPosition }) => {
       <CardActions>
         <FlatButton
           label="Add to Squad"
-          onClick={() => addPlayer(player.id - 1, selectedPosition.id)}
+          onClick={addPlayer}
         />
         <FlatButton label="Reset Squad" onClick={resetHandler} />
       </CardActions>
     </Card>
   );
 };
+
+PlayerCard.propTypes = {
+  addPlayer: func.isRequired,
+  resetHandler: func.isRequired,  
+}
 
 export default PlayerCard;
