@@ -1,23 +1,28 @@
 import React, { Component, Fragment } from 'react';
-import { func, object } from 'prop-types';
+import { array, func, object } from 'prop-types';
 import { connect } from 'react-redux';
 
 import { addPlayer, removePlayer, selectPosition } from '../../modules/squad';
-import {
-  Transition,
-  TransitionGroup,
-  CSSTransition
-} from 'react-transition-group';
 import './Field.scss';
 
-import Position from '../../components/Position';
 import Statistics from '../Statistics/Statistics';
 import Player from '../../components/Player';
 import { selectPlayer } from '../../modules/player';
-import { changePlayerSelectionStatus } from '../../modules/players';
-import PositionContainer from '../PositionContainer/PositionContainer';
+import { changePlayerSelectionStatus, resetPlayersSelection } from '../../modules/players';
+import Position from '../Position/Position';
 
 class Field extends Component {
+  selectedPlayerArray() {
+    const selectedPlayerArray = [];
+    // console.log(this.props.players)
+    this.props.squad.forEach( (position) => {
+      if(position.playerId !== null) {
+        selectedPlayerArray.push(this.props.players[position.playerId])
+      }
+    })
+    return selectedPlayerArray;
+  }
+
   renderPositions() {
     return this.props.squad.map((pos, i) => {
       let positionClass;
@@ -43,7 +48,7 @@ class Field extends Component {
       }
       // console.log(pos)
       return (
-        <PositionContainer
+        <Position
           classes={positionClass}
           key={pos.position}
           id={pos.id}
@@ -51,30 +56,42 @@ class Field extends Component {
           selected={pos.selected}
           playerId={pos.playerId}
           selectPosition={this.props.selectPosition}
+          selectHandler={this.props.selectPlayer}
           addPlayer={this.props.addPlayer}
           removePlayer={this.props.removePlayer}
           changePlayerSelectionStatus={this.props.changePlayerSelectionStatus}
+          resetPlayersSelection={this.props.resetPlayersSelection}
           players={this.props.players}>
           {/* {pos.playerId && <Player id={pos.playerId} player={players[pos.playerId]} selectHandler={selectPlayer} />} */}
-        </PositionContainer>
+        </Position>
       );
     });
   }
 
   render() {
+    // console.log(this.selectedPlayerArray());
     return (
-      <div className="col-lg-8">
-        <Statistics />
-        <div className="field">
-          <div className="field__wrapper">{this.renderPositions()}</div>
+      <Fragment>
+        <Statistics selectedPlayers={this.selectedPlayerArray()}/>
+        <div className="col-lg-7">
+          <div className="field">
+            {/* <div className="field__wrapper">{this.renderPositions()}</div> */}
+            {this.renderPositions()}
+          </div>
         </div>
-      </div>
+      </Fragment>  
     );
   }
 }
 
 Field.propTypes = {
-  selectPosition: func.isRequired
+  addPlayer: func.isRequired,
+  removePlayer: func.isRequired,
+  resetPlayersSelection: func.isRequired,
+  changePlayerSelectionStatus: func.isRequired,  
+  selectPosition: func.isRequired,
+  squad: array.isRequired,
+  players: array.isRequired
 };
 
 const mapStateToProps = state => {
@@ -86,11 +103,12 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    selectPlayer: (id) => dispatch(selectPlayer(id)),
     selectPosition: position => dispatch(selectPosition(position)),
     addPlayer: (player, positionId) => dispatch(addPlayer(player, positionId)),
     removePlayer: position => dispatch(removePlayer(position)),
-    changePlayerSelectionStatus: playerId =>
-      dispatch(changePlayerSelectionStatus(playerId))
+    changePlayerSelectionStatus: (playerId) => dispatch(changePlayerSelectionStatus(playerId)),
+    resetPlayersSelection: () => dispatch(resetPlayersSelection())
   };
 };
 
