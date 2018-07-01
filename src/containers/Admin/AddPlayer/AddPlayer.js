@@ -144,13 +144,6 @@ class AddPlayer extends Component {
             value={this.state.goals}
             onChange={this.handleChange}
           />
-          <TextField
-            className="form__input"
-            name="goals"
-            hintText="Goals"
-            value={this.state.goals}
-            onChange={this.handleChange}
-          />
           <DatePicker
             name="dob"
             hintText="Landscape Dialog"
